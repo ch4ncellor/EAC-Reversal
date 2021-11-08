@@ -600,3 +600,253 @@ LABEL_47:
   return 0xC000000Di64;
 }
 
+LONG_PTR __fastcall EAC::Callbacks::ScanForKernelPatches(__int64 a1, __int64 a2)
+{
+  // [COLLAPSED LOCAL DECLARATIONS. PRESS KEYPAD CTRL-"+" TO EXPAND]
+
+  v4 = 0;
+  m_bHasNTOSKrnlBeenPatched = EAC::Callbacks::CheckForNTOSKRNLPatches() - 1;
+  if ( !m_bHasNTOSKrnlBeenPatched )
+  {
+    v4 = 0xC0020007;
+    goto LABEL_35;
+  }
+  if ( m_bHasNTOSKrnlBeenPatched == 1 )
+  {
+    v4 = 0xC0020008;
+    goto LABEL_35;
+  }
+  if ( MEMORY[0xFFFFF7800000026C] <= 6u && (MEMORY[0xFFFFF7800000026C] != 6 || (MEMORY[0xFFFFF78000000270] - 2) > 1) )
+    goto LABEL_28;
+  if ( !EAC::Memory::GetBootGUID(v38, v41) )
+  {
+    EAC::Callbacks::ReportViolation_1(a2, 0x5AADB103i64, 0i64, 0i64, 0i64);
+LABEL_28:
+    sub_14002F998(a2, 0x40010006i64);
+    v4 = sub_14004D884(a1, a2);
+    goto LABEL_29;
+  }
+  if ( v39 )
+  {
+    strcpy(v23, "5Ê\\\x1Bê8L");
+    *&v44[48] = 0i64;
+    *&v44[56] = 0;
+    v6 = -1286774945;
+    v24 = 80942024;
+    v7 = 0i64;
+    v25 = 594688901;
+    v26 = -299880827;
+    v27 = -1561828364;
+    v28 = -1767145028;
+    v29 = -1192192300;
+    v30 = -526128710;
+    v31 = 1008280262;
+    v32 = -1032869015;
+    v33 = 1233558148;
+    v34 = -2057461693;
+    v35 = 1825154181;
+    v36 = -2016214440;
+    *v44 = 0i64;
+    *&v44[16] = 0i64;
+    *&v44[32] = 0i64;
+    do
+    {
+      v6 = __ROL4__(214013 * v6 + 2531011, 4);
+      *&v44[v7] = *&v23[v7] ^ v6;
+      v7 += 4i64;
+    }
+    while ( v7 < 0x3C );
+    v8 = 1;
+    if ( !EAC::Memory::CompareUnicodeStr(v38, v44) )
+      goto LABEL_15;
+    v37[0] = 1666580416;
+    *&v43[48] = 0i64;
+    *&v43[56] = 0;
+    v9 = -1709524677;
+    v37[1] = -1558651321;
+    v37[2] = 629101256;
+    v10 = 0i64;
+    v37[3] = 467525598;
+    v37[4] = -1984057362;
+    v37[5] = 736416474;
+    v37[6] = -1549857426;
+    v37[7] = -1801439344;
+    v37[8] = 431986060;
+    v37[9] = -1755171940;
+    v37[10] = -958271565;
+    v37[11] = 1854764083;
+    v37[12] = -693829820;
+    v37[13] = -1894837076;
+    v37[14] = 529568623;
+    *v43 = 0i64;
+    *&v43[16] = 0i64;
+    *&v43[32] = 0i64;
+    do
+    {
+      v9 = __ROL4__(((v9 ^ (v9 >> 7)) << 9) ^ v9 ^ (v9 >> 7) ^ ((((v9 ^ (v9 >> 7)) << 9) ^ v9 ^ (v9 >> 7)) >> 13), 4);
+      *&v43[v10 * 4] = v37[v10] ^ v9;
+      ++v10;
+    }
+    while ( v10 < 15 );
+    v8 = 3;
+    if ( EAC::Memory::CompareUnicodeStr(v38, v43) )
+    {
+      LOBYTE(v4) = 1;
+    }
+    else
+    {
+LABEL_15:
+      if ( (v8 & 2) == 0 )
+      {
+LABEL_17:
+        memset(v44, 0, sizeof(v44));
+        EAC::Memory::FreeUnicdeString(v38);
+        v4 = v4 != 0 ? 0xC0020010 : 0;
+        goto LABEL_18;
+      }
+    }
+    memset(v43, 0, sizeof(v43));
+    goto LABEL_17;
+  }
+LABEL_18:
+  if ( v42 )
+  {
+    v21[0] = -437452254;
+    v22 = 25715;
+    v21[1] = 991072209;
+    *&v40[1] = 0i64;
+    v11 = 0i64;
+    WORD4(v40[1]) = 0;
+    v12 = -442957236;
+    v21[2] = 55889785;
+    v21[3] = 1113584501;
+    v21[4] = -1296637238;
+    v13 = 24i64;
+    v21[5] = 799280214;
+    v40[0] = 0i64;
+    do
+    {
+      v14 = v21[v11] ^ v12;
+      v12 = __ROL4__(1140671485 * v12 + 12820163, 1);
+      *(v40 + v11 * 4) = v14;
+      ++v11;
+    }
+    while ( v11 < 6 );
+    do
+    {
+      v15 = v12;
+      v12 >>= 8;
+      *(v40 + v13) = *(v21 + v13) ^ v15;
+      ++v13;
+    }
+    while ( v13 < 0x1A );
+    v16 = EAC::Memory::CompareUnicodeStr(v41, v40);
+    memset(v40, 0, 0x1Aui64);
+    if ( v16 )
+      v4 = 0xC0020011;
+    EAC::Memory::FreeUnicdeString(v41);
+  }
+  if ( !v4 )
+    goto LABEL_28;
+LABEL_29:
+  if ( v4 != 0x40031000 )
+  {
+LABEL_35:
+    v19 = v4;
+    v18 = a2;
+    goto LABEL_36;
+  }
+  sub_140025304(a2);
+  v17 = sub_140009F70(a2);
+  v18 = a2;
+  if ( !v17 )
+  {
+    v19 = 3221356569i64;
+LABEL_36:
+    EAC::Callbacks::ReportViolation_0(v18, v19);
+    return sub_140027958();
+  }
+  sub_14002F6A8(a2, 0x40031000);
+  return sub_140027958();
+}
+
+__int64 EAC::Callbacks::CheckForNTOSKRNLPatches()
+{
+  // [COLLAPSED LOCAL DECLARATIONS. PRESS KEYPAD CTRL-"+" TO EXPAND]
+
+  v0 = 0i64;
+  LODWORD(FileSize) = 0;
+  v1 = 2;
+  ntoskrnlBase = EAC::Memory::GetNTOSKRNLBaseAddress();
+  if ( ntoskrnlBase && EAC::Memory::GetNTOSKRNLPath(ModulePath, 1) )
+  {
+    if ( MEMORY[0xFFFFF7800000026C] <= 6u && (MEMORY[0xFFFFF7800000026C] != 6 || (MEMORY[0xFFFFF78000000270] - 2) > 1) )
+      goto LABEL_10;
+    v7[0] = 1035157922;
+    v7[1] = -1211973253;
+    v7[2] = 890527115;
+    v7[3] = -1604919530;
+    v7[4] = 335976341;
+    v7[5] = 768738782;
+    v7[6] = 1965411501;
+    v7[7] = 387677515;
+    v7[8] = -584117672;
+    v7[9] = 323241621;
+    v7[10] = -1563280376;
+    v7[11] = 2025074343;
+    v7[12] = 2050208706;
+    v7[13] = 239808795;
+    v7[14] = 1411383000;
+    v7[15] = -198881325;
+    v7[16] = 331163443;
+    EAC::Memory::memset(Dst, 0, 0x44ui64);
+    v3 = 276658416;
+    v13 = v7;
+    v14 = Dst;
+    do
+    {
+      v3 = ~(((v3 ^ (v3 << 13)) >> 7) ^ v3 ^ (v3 << 13) ^ ((((v3 ^ (v3 << 13)) >> 7) ^ v3 ^ (v3 << 13)) << 17));
+      *(v14->m128_i32 + v0) = *(v13 + v0) ^ v3;
+      v0 += 4i64;
+    }
+    while ( v0 < 0x44 );
+    LOBYTE(v0) = 1;
+    if ( EAC::Memory::CompareUnicodeStr(ModulePath, Dst) )// ntoskrnl.exe
+    {
+      v4 = 1;
+    }
+    else
+    {
+LABEL_10:
+      v4 = 0;
+      if ( (v0 & 1) == 0 )
+        goto LABEL_13;
+    }
+    memset(Dst, 0, 0x44ui64);
+    if ( v4 )
+    {
+      v1 = 1;
+LABEL_26:
+      EAC::Memory::FreeUnicdeString(ModulePath);
+      return v1;
+    }
+LABEL_13:
+    if ( EAC::Memory::ForceReadFile(ModulePath, &pAllocatedHeap, &FileSize) )
+    {
+      pAllocatedHeapAddr = pAllocatedHeap;
+      if ( FileSize >= 0x1000 )
+        v1 = !EAC::Memory::GetPEHeader(ntoskrnlBase, 0x1000ui64, &FileSize, &MemoryHeader)
+          || !EAC::Memory::GetPEHeader(pAllocatedHeapAddr, 0x1000ui64, &FileSize, &DiskHeader)
+          || MemoryHeader->FileHeader.NumberOfSections != DiskHeader->FileHeader.NumberOfSections
+          || MemoryHeader->FileHeader.TimeDateStamp != DiskHeader->FileHeader.TimeDateStamp
+          || MemoryHeader->OptionalHeader.AddressOfEntryPoint != DiskHeader->OptionalHeader.AddressOfEntryPoint
+          || MemoryHeader->OptionalHeader.CheckSum != DiskHeader->OptionalHeader.CheckSum
+          || MemoryHeader->OptionalHeader.SizeOfImage != DiskHeader->OptionalHeader.SizeOfImage;
+      if ( pAllocatedHeapAddr )
+        EAC::Memory::ExFreePool(pAllocatedHeapAddr);
+    }
+    goto LABEL_26;
+  }
+  return v1;
+}
+
