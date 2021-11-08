@@ -231,6 +231,80 @@ char __fastcall EAC::HWID::HashFileInfromation(__int64 CurrentProcess, struct_pH
   return 1;
 }
 
+char __fastcall EAC::HWID::SetNTOSKRNLOptionalHeaderHash(unsigned __int64 pCurrentFileBeingReadInMemory, unsigned int a2, _OWORD *pOutput)
+{
+  char bGrabbedHWID; // di
+  __int64 v6; // rsi
+  _IMAGE_NT_HEADERS64 *v7; // rax
+  IMAGE_DATA_DIRECTORY *v8; // r8
+  unsigned __int64 v9; // rax
+  __int64 v10; // rdx
+  unsigned __int64 v11; // rsi
+  unsigned __int64 v12; // rcx
+  unsigned int v13; // er14
+  _IMAGE_NT_HEADERS64 *v14; // rdx
+  char *v15; // rax
+  unsigned int v16; // ecx
+  __int64 v17; // rbx
+
+  bGrabbedHWID = 0;
+  if ( pOutput )
+  {
+    if ( pCurrentFileBeingReadInMemory )
+    {
+      v6 = a2;
+      v7 = EAC::Memory::GetImageBase(pCurrentFileBeingReadInMemory, a2);
+      if ( v7 )
+      {
+        v8 = &v7->OptionalHeader.DataDirectory[4];
+        if ( v7->OptionalHeader.Magic != IMAGE_NT_OPTIONAL_HDR32_MAGIC )
+          v8 = &v7->OptionalHeader.DataDirectory[6];
+        if ( v8->VirtualAddress )
+        {
+          if ( v8->Size )
+          {
+            v9 = sub_14004EC8C(v8->VirtualAddress, v7, pCurrentFileBeingReadInMemory);
+            if ( v9 >= pCurrentFileBeingReadInMemory && v9 + 28 > v9 )
+            {
+              v11 = pCurrentFileBeingReadInMemory + v6;
+              if ( v9 + 28 <= v11 )
+              {
+                v12 = *(v9 + 20);
+                if ( v12 )
+                {
+                  v13 = *(v9 + 16);
+                  if ( v13 )
+                  {
+                    if ( *(v9 + 12) == 2 )
+                    {
+                      v14 = sub_14004EC8C(v12, v10, pCurrentFileBeingReadInMemory);
+                      if ( v14 >= pCurrentFileBeingReadInMemory )
+                      {
+                        v15 = v14 + v13;
+                        if ( v15 > v14 && v15 <= v11 && v14->Signature == 'SDSR' )
+                        {
+                          v16 = 255;
+                          if ( v13 - 25 < 0xFF )
+                            v16 = v13 - 25;
+                          v17 = v16;
+                          EAC::Memory::memmove(pOutput, &v14->OptionalHeader, v16);
+                          *(pOutput + v17) = 0;
+                          bGrabbedHWID = 1;
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+  return bGrabbedHWID;
+}
+
 unsigned __int64 __fastcall EAC::HWID::HashMicrosoftFiles(unsigned __int64 a1, unsigned int CONSTANT_4096)
 {
   __m128 *v4; // rsi
