@@ -29,6 +29,11 @@ char EAC::Callbacks::DetectHyperVisor()
   return 1;
 }
 
+unsigned __int64 EAC::Callbacks::GetstHyperIface()
+{
+  return __readmsr(0x40000001u);                // Hypervisor interface
+}
+
 bool EAC::Callbacks::DSEFixDetection()
 {
   int nFlags; // ebx
