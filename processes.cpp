@@ -1154,3 +1154,247 @@ LABEL_14:
   return result;
 }
 
+__int64 __fastcall EAC::Callbacks::CheckForBlacklistedProcessNames(__int64 a1, _DWORD *a2, int a3, unsigned int a4)
+{
+  char v5; // bl
+  char v8; // r14
+  int v9; // edx
+  unsigned __int64 v10; // rdi
+  char v11; // dl
+  unsigned int v12; // ecx
+  int v13; // edx
+  int v14; // ecx
+  int v15; // edx
+  unsigned int v16; // ecx
+  bool v17; // zf
+  unsigned int v18; // edx
+  unsigned __int64 v19; // rdi
+  unsigned __int64 i; // rdi
+  char v21; // cl
+  char v22; // dl
+  unsigned int v23; // edx
+  unsigned __int64 v24; // rdi
+  int v25; // ecx
+  unsigned __int64 j; // rdi
+  char v27; // cl
+  char v28; // dl
+  unsigned int v29; // ecx
+  int v30; // edx
+  int v31; // edi
+  int v32; // ecx
+  int v33; // edx
+  unsigned int v34; // edx
+  unsigned __int64 v35; // rdi
+  int v37[2]; // [rsp+38h] [rbp-49h]
+  __int16 v38; // [rsp+40h] [rbp-41h]
+  char v39; // [rsp+42h] [rbp-3Fh]
+  int v40[3]; // [rsp+43h] [rbp-3Eh]
+  char v41; // [rsp+4Fh] [rbp-32h]
+  int v42[3]; // [rsp+50h] [rbp-31h]
+  __int16 v43; // [rsp+5Ch] [rbp-25h]
+  char v44; // [rsp+5Eh] [rbp-23h]
+  int v45[3]; // [rsp+5Fh] [rbp-22h]
+  _BYTE v46[11]; // [rsp+6Bh] [rbp-16h] BYREF
+  _BYTE v47[13]; // [rsp+76h] [rbp-Bh] BYREF
+  _BYTE v48[15]; // [rsp+83h] [rbp+2h] BYREF
+  _BYTE v49[12]; // [rsp+92h] [rbp+11h] BYREF
+  char v50[24]; // [rsp+A0h] [rbp+1Fh] BYREF
+
+  v5 = 0;
+  if ( !EAC::Imports::GetProcessFileName(a1, v50) )
+    return a4;
+  v8 = 1;
+  if ( !a2 || *a2 != 0x52 && *a2 != 0x118 && *a2 != 0x119 && *a2 != 0x11B && *a2 != 0x17F && *a2 != 0x1EA )
+    goto LABEL_13;
+  v45[0] = -1709991619;
+  *v49 = 0i64;
+  v9 = 1210365784;
+  *&v49[8] = 0;
+  v10 = 0i64;
+  v45[1] = 1457018111;
+  v45[2] = 18902803;
+  do
+  {
+    v9 = ~(1103515245 * v9 + 12345);
+    *&v49[v10 * 4] = v45[v10] ^ v9;
+    ++v10;
+  }
+  while ( v10 < 3 );
+  v5 = 1;
+  if ( EAC::Memory::CompareStrings(v50, v49, 0xBui64) )
+  {
+    v11 = 1;
+  }
+  else
+  {
+LABEL_13:
+    v11 = 0;
+    if ( (v5 & 1) == 0 )
+      goto LABEL_26;
+  }
+  v5 &= 0xFEu;
+  memset(v49, 0, sizeof(v49));
+  if ( v11 )
+  {
+    v12 = a4 | 2;
+    if ( (a3 & 2) == 0 )
+      v12 = a4;
+    v13 = v12 | 8;
+    if ( (a3 & 8) == 0 )
+      v13 = v12;
+    v14 = v13 | 0x10;
+    if ( (a3 & 0x10) == 0 )
+      v14 = v13;
+    v15 = v14 | 0x20;
+    if ( (a3 & 0x20) == 0 )
+      v15 = v14;
+    v16 = v15 | 0x200;
+    if ( (a3 & 0x200) == 0 )
+      v16 = v15;
+    a4 = v16 | 0x400;
+    v17 = (a3 & 0x400) == 0;
+LABEL_64:
+    if ( v17 )
+      a4 = v16;
+    return a4;
+  }
+  if ( *a2 != 20 )
+    goto LABEL_33;
+LABEL_26:
+  v37[0] = -1987792738;
+  *v46 = 0i64;
+  v5 |= 2u;
+  *&v46[8] = 0;
+  v18 = -640686133;
+  v46[10] = 0;
+  v19 = 0i64;
+  v37[1] = 392935476;
+  v38 = 14253;
+  v39 = -74;
+  do
+  {
+    *&v46[v19 * 4] = v37[v19] ^ v18;
+    ++v19;
+    v18 = __ROR4__(
+            ((v18 ^ (v18 >> 7)) << 9) ^ v18 ^ (v18 >> 7) ^ ((((v18 ^ (v18 >> 7)) << 9) ^ v18 ^ (v18 >> 7)) >> 13),
+            4);
+  }
+  while ( v19 < 2 );
+  for ( i = 8i64; i < 0xB; ++i )
+  {
+    v21 = v18;
+    v18 >>= 8;
+    v46[i] = *(v37 + i) ^ v21;
+  }
+  if ( EAC::Memory::CompareStrings(v50, v46, 0xAui64) )
+    v22 = 1;
+  else
+LABEL_33:
+    v22 = 0;
+  if ( (v5 & 2) != 0 )
+  {
+    v5 &= 0xFDu;
+    memset(v46, 0, sizeof(v46));
+  }
+  if ( v22 )
+  {
+    v16 = a4 | 0x400;
+    if ( (a3 & 0x400) == 0 )
+      v16 = a4;
+    a4 = v16 | 0x10;
+    v17 = (a3 & 0x10) == 0;
+    goto LABEL_64;
+  }
+  if ( *a2 != 330 )
+    goto LABEL_47;
+  v42[0] = 827781030;
+  *v48 = 0i64;
+  v5 |= 4u;
+  *&v48[8] = 0;
+  v23 = 1445236465;
+  *&v48[12] = 0;
+  v24 = 0i64;
+  v48[14] = 0;
+  v42[1] = -1132862917;
+  v42[2] = 347640278;
+  v43 = 26589;
+  v44 = 98;
+  do
+  {
+    v25 = v42[v24] ^ v23;
+    v23 = __ROR4__(1103515245 * v23 + 12345, 3);
+    *&v48[v24 * 4] = v25;
+    ++v24;
+  }
+  while ( v24 < 3 );
+  for ( j = 12i64; j < 0xF; ++j )
+  {
+    v27 = v23;
+    v23 >>= 8;
+    v48[j] = *(v42 + j) ^ v27;
+  }
+  if ( EAC::Memory::CompareStrings(v50, v48, 0xEui64) )
+    v28 = 1;
+  else
+LABEL_47:
+    v28 = 0;
+  if ( (v5 & 4) != 0 )
+  {
+    v5 &= 0xFBu;
+    memset(v48, 0, sizeof(v48));
+  }
+  if ( v28 )
+  {
+    v29 = a4 | 0x40;
+    if ( (a3 & 0x40) == 0 )
+      v29 = a4;
+    v30 = v29 | 0x400;
+    if ( (a3 & 0x400) == 0 )
+      v30 = v29;
+    v31 = v30 | 0x1000;
+    if ( (a3 & 0x1000) == 0 )
+      v31 = v30;
+    v32 = v31 | 0x800;
+    if ( (a3 & 0x800) == 0 )
+      v32 = v31;
+    v33 = v32 | 1;
+    if ( (a3 & 1) == 0 )
+      v33 = v32;
+    v16 = v33 | 0x10;
+    if ( (a3 & 0x10) == 0 )
+      v16 = v33;
+    a4 = v16 | 0x100000;
+    v17 = (a3 & 0x100000) == 0;
+    goto LABEL_64;
+  }
+  if ( MEMORY[0xFFFFF7800000026C] != 10 && EAC::Memory::GetBuildNumber() < 10240 )// if not windows 10
+    goto LABEL_73;
+  if ( (a3 & 0x400) == 0 )
+    goto LABEL_73;
+  v40[0] = -756454645;
+  *v47 = 0i64;
+  v5 |= 8u;
+  *&v47[8] = 0;
+  v34 = -1584920471;
+  v47[12] = 0;
+  v35 = 0i64;
+  v40[1] = 1749006771;
+  v40[2] = 72172906;
+  v41 = -4;
+  do
+  {
+    *&v47[v35 * 4] = v40[v35] ^ v34;
+    ++v35;
+    v34 = -(((v34 ^ (v34 << 13)) >> 7) ^ v34 ^ (v34 << 13) ^ ((((v34 ^ (v34 << 13)) >> 7) ^ v34 ^ (v34 << 13)) << 17));
+  }
+  while ( v35 < 3 );
+  v47[12] = v41 ^ v34;
+  if ( !EAC::Memory::CompareStrings(v50, v47, 0xCui64) )
+LABEL_73:
+    v8 = 0;
+  if ( (v5 & 8) != 0 )
+    memset(v47, 0, sizeof(v47));
+  if ( v8 )
+    a4 |= 0x400u;
+  return a4;
+}
