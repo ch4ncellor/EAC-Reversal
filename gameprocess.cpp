@@ -394,3 +394,30 @@ void __fastcall EAC::Callbacks::DetectLoadedModulesInGame2(__int64 pStr, __int64
     }
   }
 }
+
+void EAC::Callbacks::CloseGameProcess()
+{
+  if ( EAC::Globals::GameProcessID )
+  {
+    EAC::Callbacks::TerminateUsermodeProcess(EAC::Globals::GameProcessID, 0);
+    EAC::Globals::GameProcessID = 0i64;
+  }
+  if ( Event )
+  {
+    ObfDereferenceObject(Event);
+    Event = 0i64;
+  }
+  EAC::Globals::ProcessID = 0i64;
+}
+
+char __fastcall EAC::Callbacks::ResetGameProcessID(__int64 a1)
+{
+  char result; // al
+
+  if ( !a1 || a1 != EAC::Globals::GameProcessID )
+    return 0;
+  EAC::Globals::ProcessID = 0i64;
+  result = 1;
+  EAC::Globals::GameProcessID = 0i64;
+  return result;
+}
