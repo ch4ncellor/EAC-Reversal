@@ -1,4 +1,4 @@
-# EAC-Reversal
+# EAC-Reversal - Quick and crude reversal
 
 Credits (in no particular order):
 - [chance](https://github.com/ch4ncellor)
