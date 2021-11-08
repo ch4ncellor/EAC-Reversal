@@ -844,4 +844,26 @@ void __fastcall EAC::Callbacks::DetectLoadedModulesInGame(__int64 a1, unsigned i
   }
 }
 
+char __fastcall EAC::Callbacks::CheckForFrapsEXE(ULONG64 a1)
+{
+  char v2; // bl
+  ULONG v3; // eax
+  IMAGE_NT_HEADERS64 *v5; // [rsp+48h] [rbp+10h] BYREF
+
+  v2 = 0;
+  if ( a1 )
+  {
+    EAC::Callbacks::IsInUsermodeAddressSpace(a1, 4096i64, 1);
+    if ( EAC::Memory::GetPEHeader(a1, 0x1000ui64, 0i64, &v5) )
+    {
+      if ( v5->FileHeader.Characteristics == 271 && v5->FileHeader.NumberOfSections == 5 )
+      {
+        v3 = v5->FileHeader.TimeDateStamp;
+        if ( v3 == 0x4EA2A728 || v3 == 0x503F67EC || v3 == 0x512C56A2 || v3 == 0x55EAA341 )
+          v2 = 1;
+      }
+    }
+  }
+  return v2;
+}
 
