@@ -1106,3 +1106,51 @@ LABEL_60:
   return v2;
 }
 
+char *__fastcall EAC::Callbacks::DetectUsermodeAnomalies(unsigned int a1, __int64 a2, _OWORD *a3, __int64 a4, char *a5, unsigned int a6)
+{
+  // [COLLAPSED LOCAL DECLARATIONS. PRESS KEYPAD CTRL-"+" TO EXPAND]
+
+  v20 = a3;
+  v7 = EAC::Imports::PsGetCurrentProcess();
+  result = EAC::Imports::GetProcessBaseAddress(v7);
+  v9 = result;
+  if ( result < MmHighestUserAddress )
+  {
+    v10 = (v19 & -(EAC::Callbacks::GetProcessName(v7, v19) != 0));
+    v11 = EAC::Imports::PsGetCurrentProcessID(v7);
+    v12 = EAC::Imports::PsGetCurrentProcess();
+    v13 = EAC::Imports::PsGetProcessWow64(v12);
+    v14 = a5;
+    if ( a5 && a6 )
+      v15 = a6 + 4096;
+    else
+      v15 = 4096;
+    v16 = EAC::Memory::CopyProcessInformation(v9, 0x1000ui64, v15, 1, v13, v10, v11, &v20);
+    v17 = v16;
+    if ( v16 )
+    {
+      *(v16 + 22) = 0;
+      if ( v9 )
+      {
+        EAC::Callbacks::IsInUsermodeAddressSpace((v9 + 4096), 4096i64, 1);
+        EAC::Memory::memmove(v20, v9 + 4096, 0x1000ui64);
+      }
+      if ( !v14 )
+        goto LABEL_14;
+      if ( a6 && v20 )
+        EAC::Memory::memmove(v20 + 256, v14, a6);
+      v18 = a6;
+      if ( !a6 )
+LABEL_14:
+        v18 = 0;
+      EAC::Callbacks::ReportViolation(a1, v17, v18 + *(v17 + 10) + 4096);
+      memset(v17, 0, (*(v17 + 10) + 4096));
+      EAC::Memory::ExFreePool(v17);
+    }
+    result = v19;
+    if ( v10 == v19 )
+      result = EAC::Memory::FreeUnicdeString(v19);
+  }
+  return result;
+}
+
