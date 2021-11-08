@@ -719,57 +719,6 @@ LABEL_85:
     EAC::Memory::ExFreePool(v5);
 }
 
-void __fastcall EAC::Callbacks::CheckForManualMappedModule(ULONG64 *pAnomalyHashStruct)
-{
-  // [COLLAPSED LOCAL DECLARATIONS. PRESS KEYPAD CTRL-"+" TO EXPAND]
-
-  if ( pAnomalyHashStruct )
-  {
-    v11 = 0i64;
-    v2 = pAnomalyHashStruct[1];
-    if ( v2 )
-    {
-      EAC::Callbacks::IsInUsermodeAddressSpace(pAnomalyHashStruct[1], 4096i64, 1);
-      if ( EAC::Memory::GetPEHeader(v2, 0x1000ui64, 0i64, &v12) )
-      {
-        v3 = v12;
-        v4 = &v12->OptionalHeader + v12->FileHeader.SizeOfOptionalHeader;
-        for ( i = 0; i < v3->FileHeader.NumberOfSections && *(pAnomalyHashStruct + 10) != 32; ++i )
-        {
-          EAC::Callbacks::IsInUsermodeAddressSpace(v4, 40i64, 1);
-          v6 = *(v4 + 3);
-          if ( v6 )
-          {
-            v7 = *(v4 + 2);
-            if ( v7 )
-            {
-              if ( (*(v4 + 9) & 0x2000000) == 0 )
-              {
-                v8 = *v4;
-                if ( (*v4 != 'ler.' || *(v4 + 2) != 'co') && v8 != 'slt.' )
-                {
-                  if ( v8 != 'rsr.' || (v9 = 1, v4[4] != 'c') )
-                    v9 = 0;
-                  BYTE12(v11) = v9;
-                  v10 = v9;
-                  if ( (*(*pAnomalyHashStruct + 26) & 0x60) != 0 )
-                    v10 = 1;
-                  BYTE12(v11) = v10;
-                  *&v11 = v2 + v6;
-                  DWORD2(v11) = v7;
-                  EAC::Callbacks::IsInUsermodeAddressSpace(v2 + v6, v7, 1);
-                  EAC::Callbacks::SetHashOfAnomaly(&v11, pAnomalyHashStruct);
-                }
-              }
-            }
-          }
-          v4 += 40;
-        }
-      }
-    }
-  }
-}
-
 void __fastcall EAC::Callbacks::DetectLoadedModulesInGame(__int64 a1, unsigned int a2, unsigned __int64 a3, __int64 a4)
 {
   unsigned __int16 *v4; // rsi
