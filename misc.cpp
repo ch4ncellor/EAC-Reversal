@@ -515,3 +515,130 @@ LABEL_49:
   if ( pProcess )
     EAC::Memory::ReleasePEPROCESS(pProcess);
 }
+
+bool __fastcall EAC::Callbacks::CheckForPhysicalHandle(__int64 a1)
+{
+  // [COLLAPSED LOCAL DECLARATIONS. PRESS KEYPAD CTRL-"+" TO EXPAND]
+
+  if ( !a1 )
+    return 0;
+  v2 = qword_140073320 == 0;
+  *a1 = 0i64;
+  *(a1 + 16) = 0i64;
+  if ( v2 || _InterlockedCompareExchange(&dword_140074238, 1, 0) )
+    return 0;
+  v3 = EAC::Callbacks::QuerySystemInformation(0x10u, 0x80000u, 0x1000000u, 0i64);
+  if ( !v3 )
+    goto LABEL_41;
+  v21[0] = 1916479917;
+  v22 = 7074;
+  v4 = 44i64;
+  v21[1] = -1077771171;
+  *&physMemDecrypted[2] = 0i64;
+  DWORD2(physMemDecrypted[2]) = 0;
+  v5 = 1920936433;
+  WORD6(physMemDecrypted[2]) = 0;
+  v6 = 0i64;
+  v21[2] = -456920151;
+  v21[3] = 1354280435;
+  v21[4] = -1213991906;
+  v21[5] = -252238082;
+  v21[6] = -16337681;
+  v21[7] = 1002680223;
+  v21[8] = 38635846;
+  v21[9] = -1183450918;
+  v21[10] = -1816555846;
+  physMemDecrypted[0] = 0i64;
+  physMemDecrypted[1] = 0i64;
+  v29 = v21;
+  v30 = physMemDecrypted;
+  do
+  {
+    *(v30 + v6 * 4) = v29[v6] ^ v5;
+    ++v6;
+    v5 = __ROR4__(((v5 ^ (v5 << 13)) >> 17) ^ v5 ^ (v5 << 13) ^ (32 * (((v5 ^ (v5 << 13)) >> 17) ^ v5 ^ (v5 << 13))), 1);
+  }
+  while ( v6 < 11 );
+  v29 = v21;
+  v30 = physMemDecrypted;
+  do
+  {
+    v7 = v5;
+    v5 >>= 8;
+    *(v30 + v4) = *(v29 + v4) ^ v7;
+    ++v4;
+  }
+  while ( v4 < 0x2E );
+  EAC::Memory::InitializeUnicodeStringWithCString(szPhysMem, physMemDecrypted);// \Device\PhysicalMemory
+  ObjectAttributes.Length = 48;
+  ObjectAttributes.ObjectName = szPhysMem;
+  ObjectAttributes.RootDirectory = 0i64;
+  ObjectAttributes.Attributes = 576;
+  *&ObjectAttributes.SecurityDescriptor = 0i64;
+  if ( ZwOpenSection(&SectionHandle, 1u, &ObjectAttributes) >= 0 )
+  {
+    v8 = EAC::Imports::ObReferenceObjectByHandle(SectionHandle, 1u, 0i64, 0, &EAC::Globals::Object, 0i64);
+    v9 = EAC::Globals::Object;
+    if ( v8 < 0 )
+      v9 = 0i64;
+    EAC::Globals::Object = v9;
+    ZwClose(SectionHandle);
+  }
+  v10 = 0i64;
+  memset(physMemDecrypted, 0, 0x2Eui64);
+  if ( !*v3 )
+    goto LABEL_37;
+  sectionObjectType = EAC::Globals::Object;
+  v12 = (v3 + 2);
+  v13 = 0;
+  while ( 1 )
+  {
+    if ( v12[1] != sectionObjectType || !sectionObjectType || *v12 == 4 )
+      goto LABEL_21;
+    v14 = *(v12 + 3);
+    v15 = EAC::Memory::ResolveImportWrapper(qword_140073D58, &qword_140073D58, 0i64);
+    if ( !v15 || !v15(v14) )
+      break;
+    sectionObjectType = EAC::Globals::Object;
+LABEL_21:
+    ++v10;
+    v12 += 3;
+    if ( v10 >= *v3 )
+      goto LABEL_38;
+  }
+  v16 = EAC::Memory::GetProcessImageFilename(*v12, v24);
+  if ( v16 )
+    v13 = sub_140021608(v24, v26);
+  v17 = -v13;
+  v18 = (v26 & -(v17 != 0));
+  if ( !*(a1 + 4) )
+  {
+    *a1 = 1;
+    *(a1 + 4) = 13;
+    if ( v18 )
+    {
+      if ( *((v26 & -(v17 != 0)) + 8) && *v18 && *((v26 & -(v17 != 0)) + 2) && !*(a1 + 8) )
+      {
+        if ( a1 == 0xFFFFFFFFFFFFFFF0ui64 )
+          v19 = 0;
+        else
+          v19 = EAC::Memory::AllocateCopyUnicodeString(a1 + 0x10, v18, *v18);
+        *(a1 + 8) = v19;
+      }
+    }
+  }
+  if ( v16 )
+    EAC::Memory::FreeUnicdeString(v24);
+LABEL_37:
+  sectionObjectType = EAC::Globals::Object;
+LABEL_38:
+  if ( sectionObjectType )
+  {
+    ObfDereferenceObject(sectionObjectType);
+    EAC::Globals::Object = 0i64;
+  }
+  EAC::Memory::ExFreePool(v3);
+LABEL_41:
+  _InterlockedExchange(&dword_140074238, 0);
+  return *(a1 + 4) != 0;
+}
