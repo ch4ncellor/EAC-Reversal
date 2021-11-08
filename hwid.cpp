@@ -643,3 +643,62 @@ DONT_NULL_OUT_RICHHEADERS_VAR:
   }
   return bHasPassedAlotOfChecksWtf;
 }
+
+unsigned __int64 __fastcall EAC::HWID::HashMoreFileShitNotSureWhat(unsigned __int64 a1, unsigned int a2, char a3)
+{
+  unsigned __int64 v5; // rbx
+  unsigned __int64 result; // rax
+  __int64 v7; // r15
+  __int64 v8; // rax
+  __int64 v9; // rdx
+  unsigned int *v10; // rsi
+  __int64 v11; // rax
+  unsigned __int64 v12; // r14
+  unsigned __int64 v13; // r9
+  unsigned int *v14; // rcx
+  unsigned int v15; // edx
+  __int128 v16; // [rsp+30h] [rbp-38h] BYREF
+  unsigned int v17; // [rsp+40h] [rbp-28h]
+
+  v5 = 0i64;
+  result = 0i64;
+  v16 = 0i64;
+  v17 = 0;
+  if ( a1 && a2 )
+  {
+    v7 = a2;
+    v8 = EAC::Memory::GetImageBase(a1, a2);
+    if ( v8 && EAC::Memory::GetProcessArchitectureType(v8) == 64 )
+    {
+      v10 = (v9 + 144);
+      if ( *(v9 + 24) != 267 )
+        v10 = (v9 + 160);
+      v11 = *v10;
+      if ( v11 )
+      {
+        v12 = v10[1];
+        if ( v12 )
+        {
+          v13 = a3 ? v11 + a1 : sub_14004EC8C(v11, v9, a1);
+          if ( v13 >= a1 && v12 + v13 > v13 && v12 + v13 <= v7 + a1 && v12 == 12 * (v12 / 12) )
+          {
+            v14 = v13;
+            v15 = 0;
+            while ( v14 < v13 + 12 * (v12 / 12) )
+            {
+              if ( v15 > *v14 )
+                goto LABEL_21;
+              v15 = *v14;
+              v14 += 3;
+            }
+            EAC::HWID::HashVar(v13, v12, &v16);
+            v5 = v17 ^ DWORD2(v16) ^ v16 | ((HIDWORD(v16) ^ DWORD1(v16) ^ v10[1]) << 32);
+          }
+        }
+      }
+    }
+LABEL_21:
+    result = v5;
+  }
+  return result;
+}
