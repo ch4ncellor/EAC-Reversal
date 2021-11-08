@@ -600,6 +600,98 @@ LABEL_47:
   return 0xC000000Di64;
 }
 
+_QWORD *__fastcall EAC::Memory::HashDriver(int a1, __int64 a2)
+{
+  // [COLLAPSED LOCAL DECLARATIONS. PRESS KEYPAD CTRL-"+" TO EXPAND]
+
+  v2 = *(a2 + 40);
+  v37 = 0;
+  v3 = *(a2 + 56);
+  v4 = 0i64;
+  v32[0] = v2;
+  v7 = *(a2 + 72);
+  v32[1] = v3;
+  v8 = *(a2 + 88);
+  v32[2] = v7;
+  v9 = *(a2 + 104);
+  v32[3] = v8;
+  v10 = *(a2 + 120);
+  v32[4] = v9;
+  v11 = *(a2 + 136);
+  v32[5] = v10;
+  v32[6] = v11;
+  v32[7] = *(a2 + 152);
+  v12 = *(a2 + 280);
+  v13 = *(a2 + 184);
+  v32[8] = *(a2 + 168);
+  v14 = *(a2 + 200);
+  v32[9] = v13;
+  v15 = *(a2 + 216);
+  v32[10] = v14;
+  v16 = *(a2 + 232);
+  v32[11] = v15;
+  v17 = *(a2 + 248);
+  v32[12] = v16;
+  v18 = *(a2 + 264);
+  v32[13] = v17;
+  v32[14] = v18;
+  v33 = v12;
+  v34 = *(a2 + 288);
+  v35 = *(a2 + 292);
+  v36 = *(a2 + 294);
+  v30[1] = v32;
+  v19 = -1i64;
+  do
+    ++v19;
+  while ( *(v32 + v19) );
+  LOWORD(v30[0]) = v19;
+  WORD1(v30[0]) = v19 + 1;
+  if ( EAC::Memory::CreateUnicodeString(v31, v30) >= 0 )
+  {
+    v20 = EAC::Memory::IsFileValidPEImage(v31, *(a2 + 16), &v38, 1);
+    v21 = v20;
+    if ( v20 )
+    {
+      v22 = 0i64;
+      v23 = EAC::Memory::GetSectionSize(v20);
+      v24 = v38 % v23;
+      v25 = v38 / v23;
+      if ( v38 / v23 )
+      {
+        v22 = EAC::Memory::ExAllocatePoolWithRandomTag2(24i64);
+        if ( v22 )
+        {
+          v26 = EAC::Memory::ExAllocatePoolWithRandomTag2(4i64 * v25);
+          v22[2] = v26;
+          if ( v26 )
+          {
+            *(v22 + 1) = a1;
+            *v22 = EAC::Memory::GenerateSeed(0, -1);
+            *(v22 + 2) = v23;
+            *(v22 + 3) = v25;
+            do
+            {
+              v27 = EAC::Memory::CRC32(&v21[v23 * v4], v23, 0);
+              LODWORD(v4) = v4 + 1;
+              *(v28 + v22[2]) = v27;
+            }
+            while ( v4 < v25 );
+          }
+          else
+          {
+            EAC::Memory::ExFreePool(v22);
+            v22 = 0i64;
+          }
+        }
+      }
+      v4 = v22;
+      sub_14003CCAC(v21, v24);
+    }
+    EAC::Memory::FreeUnicdeString(v31);
+  }
+  return v4;
+}
+
 LONG_PTR __fastcall EAC::Callbacks::ScanForKernelPatches(__int64 a1, __int64 a2)
 {
   // [COLLAPSED LOCAL DECLARATIONS. PRESS KEYPAD CTRL-"+" TO EXPAND]
