@@ -385,3 +385,133 @@ __int64 __fastcall EAC::Callbacks::TimingCheck()
   v20[0] = 0i64;
   return sub_1418A2D0C(v20);
 }
+
+void __fastcall EAC::Callbacks::HandleUsermodeOperation(__int64 a1, __int64 a2, _DWORD *a3)
+{
+  // [COLLAPSED LOCAL DECLARATIONS. PRESS KEYPAD CTRL-"+" TO EXPAND]
+
+  pProcess = 0i64;
+  nCallbackType = 0i64;
+  v5 = *(a2 + 32);
+  if ( !v5 )
+    goto LABEL_49;
+  v6 = *(a2 + 16);
+  if ( v6 <= 8 )
+    goto LABEL_49;
+  if ( *(a1 + 112) != v5 )
+    goto LABEL_49;
+  if ( *(a2 + 8) != v6 )
+    goto LABEL_49;
+  EAC::Callbacks::IsInUsermodeAddressSpace(v5, v6, 1);
+  v7 = EAC::Memory::ExAllocatePoolWithRandomTag2(v6);
+  nCallbackType = v7;
+  if ( !v7 )
+    goto LABEL_49;
+  EAC::Memory::memmove(v7, v5, v6);
+  pProcess = EAC::Memory::GetPEPROCESS(*(nCallbackType + 4));
+  if ( !pProcess )
+    goto LABEL_49;
+  EAC::Imports::PsGetCurrentProcess();
+  if ( !sub_140012D18() )
+    goto LABEL_49;
+  if ( *nCallbackType == 1 )
+  {
+    if ( v6 != 40 )
+      goto LABEL_49;
+    v12 = EAC::Memory::AllocateMemoryInProcess(pProcess[1], nCallbackType);
+  }
+  else if ( *nCallbackType == 2 )
+  {
+    if ( v6 != 40 )
+      goto LABEL_49;
+    v12 = sub_140045628(pProcess[1], nCallbackType);
+  }
+  else if ( *nCallbackType == 3 )
+  {
+    if ( v6 != 40 )
+      goto LABEL_49;
+    v12 = sub_14004573C(pProcess[1], nCallbackType);
+  }
+  else if ( *nCallbackType == 4 )
+  {
+    if ( v6 != 32 )
+      goto LABEL_49;
+    v12 = EAC::Memory::ProtectMemoryInProcess(pProcess[1], nCallbackType);
+  }
+  else if ( *nCallbackType == 5 )
+  {
+    if ( v6 != 28 )
+      goto LABEL_49;
+    v12 = EAC::Memory::FreeMemoryInProcess(pProcess[1], nCallbackType);
+  }
+  else
+  {
+    if ( *nCallbackType != 6 )
+    {
+      if ( *nCallbackType == 7 )
+      {
+        if ( v6 != 36 )
+          goto LABEL_49;
+        v8 = pProcess[1];
+        v9 = 0;
+        v15 = 0i64;
+        if ( !v8 )
+          goto LABEL_25;
+        if ( !*(nCallbackType + 8) || !*(nCallbackType + 20) || !*(nCallbackType + 28) )
+          goto LABEL_49;
+        if ( !EAC::Callbacks::KeStackAttachProcess(v8, v13) )
+          goto LABEL_25;
+        if ( EAC::Imports::ZwQueryVirtualMemory(
+               -1i64,
+               *(nCallbackType + 8),
+               *(nCallbackType + 16),
+               *(nCallbackType + 20),
+               *(nCallbackType + 28),
+               &v15) >= 0 )
+        {
+          *(nCallbackType + 32) = v15;
+          v9 = 1;
+        }
+      }
+      else
+      {
+        if ( *nCallbackType != 8 || v6 != 36 )
+          goto LABEL_49;
+        v8 = pProcess[1];
+        v9 = 0;
+        if ( !v8 )
+          goto LABEL_25;
+        if ( !*(nCallbackType + 12) || !*(nCallbackType + 20) || !*(nCallbackType + 24) || *(nCallbackType + 32) )
+          goto LABEL_49;
+        if ( !EAC::Callbacks::KeStackAttachProcess(v8, v13) )
+          goto LABEL_25;
+        v9 = EAC::Imports::NtSetInformationVirtualMemory(
+               v10,
+               *(nCallbackType + 8),
+               *(nCallbackType + 20),
+               *(nCallbackType + 12),
+               *(nCallbackType + 24),
+               *(nCallbackType + 32)) >= 0;
+      }
+      EAC::Callbacks::KeUnstackDetachProcess(v8, v13);
+LABEL_25:
+      v11 = !v9;
+      goto LABEL_47;
+    }
+    if ( v6 != 36 )
+      goto LABEL_49;
+    v12 = EAC::Memory::ZwFlushVirtualMemoryWrapper(pProcess[1], nCallbackType);
+  }
+  v11 = v12 == 0;
+LABEL_47:
+  if ( !v11 )
+  {
+    EAC::Memory::memmove(v5, nCallbackType, v6);
+    *a3 = v6;
+  }
+LABEL_49:
+  if ( nCallbackType )
+    EAC::Memory::ExFreePool(nCallbackType);
+  if ( pProcess )
+    EAC::Memory::ReleasePEPROCESS(pProcess);
+}
