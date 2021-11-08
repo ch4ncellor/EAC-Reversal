@@ -203,6 +203,7 @@ char __fastcall EAC::HWID::HashFileInfromation(__int64 CurrentProcess, struct_pH
   struct_pScanned_1 *_pScanned; // rdi
   char v8[56]; // [rsp+20h] [rbp-38h] BYREF
 
+  // Not sure if this is even a HWID related function.. It's probably them just sending process info to their servers.
   if ( !CurrentProcess || !pHWIDStruct || !EAC::Imports::PsGetProcessExitProcessCalled(CurrentProcess) )
     return 0;
   memset(pHWIDStruct, 0, 0x338ui64);
