@@ -301,6 +301,52 @@ __int64 EAC::Callbacks::WindowsInjectionNumber2()
   return result;
 }
 
+__int64 __fastcall EAC::Callbacks::GatherShellcodeToMap(struct_a1 *pInputStruct, __int64 a2, __int64 a3)
+{
+  // [COLLAPSED LOCAL DECLARATIONS. PRESS KEYPAD CTRL-"+" TO EXPAND]
+
+  pOutputStruct = 0i64;
+  if ( pInputStruct )
+  {
+    BaseAddress = EAC::Imports::NtAllocateVirtualMemoryWrapper(pInputStruct, 4096i64, a3, 64);
+    pOutputStruct = BaseAddress;
+    if ( BaseAddress )
+    {
+      EAC::Memory::CheckAddressBounds(BaseAddress, 4096i64);
+      if ( pInputStruct->ImageType == 64 )
+      {                                         // Thanks to @xerox for convieniently writing the shellcode all neatly like this
+        *v7 = EAC::Globals::ShellcodeBuffer64Bit;//                      0x48, 0x83, 0xEC, 0x28,        // SUB RSP, 0x28
+                                                //                         0x4D, 0x31, 0xC0, // XOR R8, R8
+                                                //                         0x48, 0x31, 0xD2, // XOR RDX, RDX
+                                                //                         0x48, 0xFF, 0xC2, // INC RDX
+                                                //                         0x48, 0xB8, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, // MOV RAX, 0
+                                                //                         0xFF, 0xD0,        // CALL RAX
+                                                //                         0x48, 0x83, 0xC4, 0x28, // ADD RSP, 0x28
+                                                //                         0xC3 // RETN
+        v7[23] = -1;
+        *&v7[15] = pInputStruct->DllEntryPoint;
+        *pOutputStruct = *v7;
+        *(pOutputStruct + 16) = *&v7[16];
+        *(pOutputStruct + 24) = 0xC48348D0;
+        *(pOutputStruct + 28) = 0xC328;
+      }
+      else
+      {
+        v8 = EAC::Globals::ShellcodeBuffer32Bit;//                         0x6A, 0x00,        // PUSH 0
+                                                //                         0x6A, 0x01,        // PUSH 1
+                                                //                         0xFF, 0x74, 0xE4, 0x0C, // PUSH [RSP+0xC]
+                                                //                         0xB8, 0x00, 0x00, 0x00, 0x00, // MOV EAX, 0
+                                                //                         0xFF, 0xD0,        // CALL EAX
+                                                //                         0xC2, 0x04, 0x00 // RETN 4
+        *(&v8 + 9) = pInputStruct->DllEntryPoint;
+        *pOutputStruct = v8;
+        *(pOutputStruct + 16) = 4;
+      }
+    }
+  }
+  return pOutputStruct;
+}
+
 char __fastcall EAC::Callbacks::StartManualMap(ULONG64 a1)
 {
   __int64 v2; // rax
