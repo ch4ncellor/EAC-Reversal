@@ -867,3 +867,242 @@ char __fastcall EAC::Callbacks::CheckForFrapsEXE(ULONG64 a1)
   return v2;
 }
 
+char EAC::Callbacks::CheckRunningPrograms()
+{
+  // [COLLAPSED LOCAL DECLARATIONS. PRESS KEYPAD CTRL-"+" TO EXPAND]
+
+  v0 = 0;
+  v1 = 0;
+  v2 = 0;
+  v3 = EAC::Memory::ExAllocatePoolWithRandomTag2(2048i64);
+  v4 = v3;
+  if ( !v3 )
+    goto LABEL_23;
+  v5 = EAC::Memory::GetRunningProcesses(v3, 0x100u);
+  if ( v5 )
+  {
+    v6 = v4;
+    while ( 1 )
+    {
+      if ( *v6 )
+      {
+        if ( EAC::Imports::PsLookupProcessByProcessID(*v6, &Object) >= 0 )
+        {
+          v7 = EAC::Imports::GetProcessFileName(Object, v55);
+          ObfDereferenceObject(Object);
+          if ( v7 )
+          {
+            v60 = 1551606071;
+            v52 = 0i64;
+            v8 = v1 | 1;
+            v61 = 1300367728;
+            v9 = -1293282290;
+            for ( i = 0i64; i < 8; i += 4i64 )
+            {
+              v9 = __ROR4__(214013 * v9 + 2531011, 3);
+              *(&v52 + i) = *(&v60 + i) ^ v9;
+            }
+            if ( EAC::Memory::CompareStrings(v55, &v52, 7ui64) )
+              goto LABEL_15;
+            v62 = 1587912774;
+            v51 = 0i64;
+            v8 |= 2u;
+            v63 = 0x8CB32030;
+            v11 = 0x97070F92;
+            for ( j = 0i64; j < 8; j += 4i64 )
+            {
+              v11 = ~(((v11 ^ (v11 >> 7)) << 9) ^ v11 ^ (v11 >> 7) ^ ((((v11 ^ (v11 >> 7)) << 9) ^ v11 ^ (v11 >> 7)) >> 13));
+              *(&v51 + j) = *(&v62 + j) ^ v11;
+            }
+            if ( EAC::Memory::CompareStrings(v55, &v51, 7ui64)// dbgview
+                                                // devenv
+                                                // tv_
+              || (v8 |= 4u, strcpy(v59, "tv_"), EAC::Memory::CompareStrings(v55, v59, 3ui64)) )
+            {
+LABEL_15:
+              v13 = 1;
+            }
+            else
+            {
+              v13 = 0;
+            }
+            if ( (v8 & 4) != 0 )
+            {
+              v8 &= 0xFFFFFFFB;
+              memset(v59, 0, 4ui64);
+            }
+            if ( (v8 & 2) != 0 )
+            {
+              v8 &= 0xFFFFFFFD;
+              memset(&v51, 0, sizeof(v51));
+            }
+            v1 = v8 & 0xFFFFFFFE;
+            memset(&v52, 0, sizeof(v52));
+            if ( v13 )
+              break;
+          }
+        }
+      }
+      ++v0;
+      ++v6;
+      if ( v0 >= v5 )
+        goto LABEL_22;
+    }
+    v2 = 1;
+  }
+LABEL_22:
+  EAC::Memory::ExFreePool(v4);
+  if ( !v2 )
+  {
+LABEL_23:
+    v14 = EAC::Memory::GetRunningModules();
+    v15 = v14;
+    if ( v14 )
+    {
+      v16 = 0;
+      if ( *v14 )
+      {
+        while ( 1 )
+        {
+          v17 = 74i64 * v16;
+          if ( *&v15[v17 + 6] >= MmSystemRangeStart )
+          {
+            v18 = HIWORD(v15[v17 + 11]);
+            v19 = &v15[v17 + 12];
+            v20 = (v19 + v18) == 0i64;
+            v21 = v19 + v18;
+            String1.Buffer = v21;
+            if ( v20 )
+            {
+              *&String1.Length = 0;
+            }
+            else
+            {
+              v22 = -1i64;
+              do
+                ++v22;
+              while ( v21[v22] );
+              String1.Length = v22;
+              String1.MaximumLength = v22 + 1;
+            }
+            v42[0] = -1641674219;
+            v23 = v1 | 8;
+            v42[1] = -1284726641;
+            *v48 = 0i64;
+            v24 = -398366639;
+            v48[8] = 0;
+            v25 = 0i64;
+            v43 = -64;
+            do
+            {
+              v26 = v42[v25] ^ v24;
+              v24 = __ROL4__(214013 * v24 + 2531011, 1);
+              *&v48[v25 * 4] = v26;
+              ++v25;
+            }
+            while ( v25 < 2 );
+            v48[8] = v43 ^ v24;
+            String2.Buffer = v48;
+            v27 = -1i64;
+            do
+              ++v27;
+            while ( v48[v27] );
+            String2.Length = v27;
+            String2.MaximumLength = v27 + 1;
+            if ( !RtlCompareString(&String1, &String2, 1u) )// Dbgv.sys
+              goto LABEL_51;
+            v46[0] = -1717625671;
+            v23 |= 0x10u;
+            v46[1] = 1890075069;
+            *v50 = 0i64;
+            v28 = -623882519;
+            *&v50[8] = 0;
+            v29 = 0i64;
+            *&v50[12] = 0;
+            v46[2] = 1862005061;
+            v47 = 31770;
+            do
+            {
+              *&v50[v29 * 4] = v46[v29] ^ v28;
+              ++v29;
+              v28 = __ROL4__(
+                      ((v28 ^ (v28 >> 7)) << 9) ^ v28 ^ (v28 >> 7) ^ ((((v28 ^ (v28 >> 7)) << 9) ^ v28 ^ (v28 >> 7)) >> 13),
+                      2);
+            }
+            while ( v29 < 3 );
+            for ( k = 12i64; k < 0xE; ++k )
+            {
+              v31 = v28;
+              v28 >>= 8;
+              v50[k] = *(v46 + k) ^ v31;
+            }
+            v57.Buffer = v50;
+            v32 = -1i64;
+            do
+              ++v32;
+            while ( v50[v32] );
+            v57.Length = v32;
+            v57.MaximumLength = v32 + 1;
+            if ( !RtlCompareString(&String1, &v57, 1u) )// PROCMON23.sys
+              goto LABEL_51;
+            v44[0] = -448893557;
+            v23 |= 0x20u;
+            v44[1] = -928826563;
+            *v49 = 0i64;
+            v33 = -749400081;
+            *&v49[8] = 0;
+            v34 = 0i64;
+            v45 = 15396;
+            do
+            {
+              v35 = v44[v34] ^ v33;
+              v33 = ~(214013 * v33 + 2531011);
+              *&v49[v34 * 4] = v35;
+              ++v34;
+            }
+            while ( v34 < 2 );
+            for ( l = 8i64; l < 0xA; ++l )
+            {
+              v37 = v33;
+              v33 >>= 8;
+              v49[l] = *(v44 + l) ^ v37;
+            }
+            v58.Buffer = v49;
+            v38 = -1i64;
+            do
+              ++v38;
+            while ( v49[v38] );
+            v58.Length = v38;
+            v58.MaximumLength = v38 + 1;
+            v39 = RtlCompareString(&String1, &v58, 1u);//  dbk64.sys
+            v40 = 0;
+            if ( !v39 )
+LABEL_51:
+              v40 = 1;
+            if ( (v23 & 0x20) != 0 )
+            {
+              v23 &= 0xFFFFFFDF;
+              memset(v49, 0, sizeof(v49));
+            }
+            if ( (v23 & 0x10) != 0 )
+            {
+              v23 &= 0xFFFFFFEF;
+              memset(v50, 0, sizeof(v50));
+            }
+            v1 = v23 & 0xFFFFFFF7;
+            memset(v48, 0, sizeof(v48));
+            if ( v40 )
+              break;
+          }
+          if ( ++v16 >= *v15 )
+            goto LABEL_60;
+        }
+        v2 = 1;
+      }
+LABEL_60:
+      EAC::Memory::ExFreePool(v15);
+    }
+  }
+  return v2;
+}
+
