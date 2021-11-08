@@ -29,6 +29,54 @@ char EAC::Callbacks::DetectHyperVisor()
   return 1;
 }
 
+bool EAC::Callbacks::DSEFixDetection()
+{
+  int nFlags; // ebx
+  _DWORD *pooltagInformation; // rax
+  void *v2; // rdx
+  unsigned int v3; // er9
+  unsigned int v4; // er8
+  _DWORD *entry; // rcx
+  int v6; // eax
+
+  nFlags = 0;
+  pooltagInformation = EAC::Callbacks::QuerySystemInformation(0x16u, 0x10000u, 0x100000u, 0i64);
+  v2 = pooltagInformation;
+  if ( pooltagInformation )
+  {
+    v3 = *pooltagInformation;
+    v4 = 0;
+    if ( *pooltagInformation )
+    {
+      entry = pooltagInformation + 3;
+      do
+      {
+        if ( nFlags == 3 )
+          break;
+        v6 = *(entry - 1);
+        if ( v6 == 'rcIC' )
+        {
+          if ( *entry > entry[1] )
+            nFlags |= 1u;
+        }
+        else if ( v6 == 'csIC' && *entry > entry[1] )// called by CiValidateImageHeader
+        {
+          nFlags |= 2u;
+        }
+        ++v4;
+        entry += 10;
+      }
+      while ( v4 < v3 );
+    }
+    EAC::Memory::ExFreePool(v2);
+  }
+  else
+  {
+    nFlags = 3;
+  }
+  return nFlags == 3;
+}
+
 char __fastcall EAC::Callbacks::WriteGameCrashInfoToRegistry(PVOID ValueData)
 {
   // [COLLAPSED LOCAL DECLARATIONS. PRESS KEYPAD CTRL-"+" TO EXPAND]
