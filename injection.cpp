@@ -535,3 +535,67 @@ char __fastcall EAC::Callbacks::StoreImageDataForLaterValidation(ULONG64 a1)
   return pEntryPoint;
 }
 
+void __fastcall EAC::Callbacks::MapAnotherImage(_QWORD *a1)
+{
+  // [COLLAPSED LOCAL DECLARATIONS. PRESS KEYPAD CTRL-"+" TO EXPAND]
+
+  if ( a1 )
+  {
+    if ( EAC::Imports::PsGetCurrentProcess() == a1[1] )
+    {
+      v2 = EAC::Imports::PsGetCurrentProcess();
+      v3 = sub_14000D244(v2);
+      if ( v3 )
+      {
+        if ( !*(v3 + 2) )
+        {
+          *&v13 = 0x173C5BB8ECB50821i64;
+          *(&v13 + 1) = 0xE19624F85FCC66AFui64;
+          v14 = -434358038;
+          v15 = 1143605379;
+          v16 = -20;
+          v4 = EAC::Memory::DecryptStr22(&v13, v17);
+          v5 = EAC::Callbacks::GetUsermodeModuleWrapper(v4);
+          memset(v17, 0, 0x1Aui64);
+          if ( v5 )
+          {
+            v17[0] = -144606394;
+            v17[1] = 1841444895;
+            v17[2] = 1227386293;
+            LOBYTE(v17[3]) = 96;
+            v6 = EAC::Memory::DecryptStr13(v17, &v13);
+            v7 = v6;
+            v8 = a1[23];
+            v9 = a1[22];
+            if ( v9 && v8 && v6 )
+            {
+              if ( EAC::Memory::GetProcessArchitectureTypeWrapper(a1[23]) == 64 )
+                EAC::Callbacks::MapAnotherImage64Bit(v9, v8, v7);
+              else
+                EAC::Callbacks::MapAnotherImage32Bit(v9, v8, v7);
+            }
+            memset(&v13, 0, 0xDui64);
+            EAC::Callbacks::IsInUsermodeAddressSpace(a1[44], 60i64, 1);
+            v10 = a1[44];
+            v18 = *v10;
+            v19 = *(v10 + 16);
+            v13 = *(v10 + 32);
+            v20 = *(v10 + 48);
+            v11 = *(v10 + 56);
+            *&v19 = 0i64;
+            DWORD2(v19) = 0;
+            EAC::Callbacks::IsInUsermodeAddressSpace(a1[23], 4096i64, 1);
+            EAC::Callbacks::RandomizeRegion(a1[23], 4096i64);
+            v12 = a1[44];
+            *v12 = 0i64;
+            *(v12 + 16) = v19;
+            *(v12 + 32) = v13;
+            *(v12 + 48) = v20;
+            *(v12 + 56) = v11;
+          }
+        }
+      }
+    }
+  }
+}
+
