@@ -301,6 +301,7 @@ __int64 EAC::Callbacks::WindowsInjectionNumber2()
   return result;
 }
 
+// Most credits to mm injection reversal goes to @Sinclairq.
 __int64 __fastcall EAC::Callbacks::GatherShellcodeToMap(struct_a1 *pInputStruct, __int64 a2, __int64 a3)
 {
   // [COLLAPSED LOCAL DECLARATIONS. PRESS KEYPAD CTRL-"+" TO EXPAND]
@@ -314,7 +315,7 @@ __int64 __fastcall EAC::Callbacks::GatherShellcodeToMap(struct_a1 *pInputStruct,
     {
       EAC::Memory::CheckAddressBounds(BaseAddress, 4096i64);
       if ( pInputStruct->ImageType == 64 )
-      {                                         // Thanks to @xerox for convieniently writing the shellcode all neatly like this
+      {                                         // Thanks to @Sinclairq for convieniently writing the shellcode all neatly like this
         *v7 = EAC::Globals::ShellcodeBuffer64Bit;//                      0x48, 0x83, 0xEC, 0x28,        // SUB RSP, 0x28
                                                 //                         0x4D, 0x31, 0xC0, // XOR R8, R8
                                                 //                         0x48, 0x31, 0xD2, // XOR RDX, RDX
